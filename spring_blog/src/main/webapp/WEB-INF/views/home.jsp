@@ -41,7 +41,7 @@
 
 </c:choose>
 
-<P>  The time on the server is ${serverTime}. </P>
+<P>  The time on the server is ${serverTime}. Hi Jack </P>
 </div>
 
 
