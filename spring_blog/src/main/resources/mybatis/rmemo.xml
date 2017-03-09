@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+ 
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="rmemo">
+
+	<select id="rcount" parameterType="int" resultType="int">
+		SELECT
+		count(*) FROM rmemo
+		WHERE memono = #{memono}
+	</select>
+
+	<insert id="create" parameterType="RmemoDTO">
+		<selectKey keyProperty="rnum" resultType="int" order="BEFORE">
+			select
+			nvl(max(rnum),0)+1 from rmemo
+		</selectKey>
+		insert into rmemo(rnum, content, regdate, id, memono)
+		values(#{rnum},
+		#{content}, sysdate, #{id}, #{memono})
+	</insert>
+
+	<select id="read" parameterType="int" resultType="RmemoDTO">
+		select * from
+		rmemo
+		where rnum = #{rnum}
+	</select>
+
+	<update id="update" parameterType="RmemoDTO">
+		update rmemo
+		set content =
+		#{content}
+		where rnum = #{rnum}
+
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from RMEMO
+		where rnum =
+		#{rnum}
+	</delete>
+	<delete id="bdelete" parameterType="int">
+		delete from RMEMO
+		where memono
+		= #{memono}
+	</delete>
+
+	<select id="list" parameterType="Map" resultType="RmemoDTO">
+		select rnum, content, to_char(regdate,'yyyy-mm-dd') regdate, id,
+		memono, r
+		FROM(
+		select rnum, content, regdate, id, memono, rownum r
+		FROM(
+		select rnum, content, regdate, id, memono
+		from Rmemo
+		where memono =
+		#{memono}
+		order by rnum DESC
+		)
+		)
+<![CDATA[
+WHERE r >= #{sno} and r <= #{eno}
+]]>
+	</select>
+
+	<select id="total" resultType="int" parameterType="int">
+		select
+		count(*) from RMEMO
+		where memono=#{memono}
+	</select>
+
+</mapper>
